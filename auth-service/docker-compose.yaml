@@ -5,7 +5,7 @@ networks:
     external: true
 
 services:
-  app:
+  auth-service:
     build: .
     restart: always
     ports:
