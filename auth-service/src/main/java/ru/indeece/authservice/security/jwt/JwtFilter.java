@@ -27,6 +27,13 @@ public class JwtFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        if (path.equals("/auth/signIn") || path.equals("/auth/registration")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = getTokenFromRequest(request);
         if (token != null && jwtService.validateToken(token)) {
             setCustomUserDetailsToSecurityContextHolder(token);

@@ -1,12 +1,12 @@
 spring:
   application:
-    name: auth-service
+    name: income-expense-service
   datasource:
     url: jdbc:postgresql://postgres:5432/users
+    #url: jdbc:postgresql://localhost:5439/postgres
     username: postgres
     password: postgres
-    hikari:
-      auto-commit: false
+    auto-commit: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,21 +24,6 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: http://eureka-server:8761/eureka
-  instance:
-    hostname: auth-service
 
 server:
-  port: 8080
-#
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
-#  endpoint:
-#    prometheus:
-#      enabled: true
-#  metrics:
-#    export:
-#      prometheus:
-#        enable: true
+  port: 8081

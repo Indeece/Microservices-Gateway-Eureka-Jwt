@@ -32,7 +32,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public JwtAuthenticationDto singIn(UserCredentialsDto userCredentialsDto) throws AuthenticationException {
         User user = findByCredentials(userCredentialsDto);
-        return jwtService.generateAuthToken(user.getEmail(),
+        return jwtService.generateAuthToken(
+                user.getEmail(),
+                user.getUserId(),
                 user.getRoles().stream().map(r -> r.getName().name())
                         .collect(java.util.stream.Collectors.toSet()));
     }
@@ -42,8 +44,12 @@ public class UserServiceImpl implements UserService {
         String refreshToken = refreshTokenDto.getRefreshToken();
         if (refreshToken != null && jwtService.validateToken(refreshToken)) {
             User user = findByEmail(jwtService.getEmailFromToken(refreshToken));
-            return jwtService.generateBaseToken(user.getEmail(), refreshToken,
-                    user.getRoles().stream().map(r -> r.getName().name()).collect(java.util.stream.Collectors.toSet()));
+            return jwtService.generateBaseToken(
+                    user.getEmail(),
+                    user.getUserId(),
+                    refreshToken,
+                    user.getRoles().stream().map(r -> r.getName().name())
+                            .collect(java.util.stream.Collectors.toSet()));
         }
         throw new  AuthenticationException("Invalid refresh token");
     }
@@ -66,6 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public String addUser(UserDto userDto){
         User user = convertToEntity(userDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -32,6 +32,13 @@ public class GatewayConfig {
                         )))
                         .uri("lb://auth-service")
                 )
+
+                .route("user-controller", r -> r.path("/user/**")
+                        .filters(f -> f.filter(jwtAuthFilter.apply(
+                                new JwtAuthenticationFilter.Config().setPublicEndpoints(PUBLIC_ENDPOINTS)
+                        )))
+                        .uri("lb://auth-service")
+                )
                 .build();
     }
 }

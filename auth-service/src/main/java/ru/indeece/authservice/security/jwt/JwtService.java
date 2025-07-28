@@ -23,16 +23,16 @@ public class JwtService {
     private String secret;
     private static final Logger LOGGER = LogManager.getLogger(JwtService.class);
 
-    public JwtAuthenticationDto generateAuthToken(String email, Set<String> roles) {
+    public JwtAuthenticationDto generateAuthToken(String email, Long userId, Set<String> roles) {
         JwtAuthenticationDto jwtDto = new JwtAuthenticationDto();
-        jwtDto.setToken(generateToken(email, roles));
+        jwtDto.setToken(generateToken(email, userId, roles));
         jwtDto.setRefreshToken(generateRefreshToken(email));
         return jwtDto;
     }
 
-    public JwtAuthenticationDto generateBaseToken(String email, String refreshToken, Set<String> roles) {
+    public JwtAuthenticationDto generateBaseToken(String email, Long userId, String refreshToken, Set<String> roles) {
         JwtAuthenticationDto jwtDto = new JwtAuthenticationDto();
-        jwtDto.setToken(generateToken(email, roles));
+        jwtDto.setToken(generateToken(email, userId, roles));
         jwtDto.setRefreshToken(refreshToken);
         return jwtDto;
     }
@@ -50,6 +50,11 @@ public class JwtService {
         Claims claims = parseToken(token);
         List<String> roles = claims.get("roles", List.class);
         return roles.stream().collect(Collectors.toSet());
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = parseToken(token);
+        return claims.get("userId", Long.class);
     }
 
     private Claims parseToken(String token) {
@@ -82,11 +87,12 @@ public class JwtService {
         return false;
     }
 
-    public String generateToken(String email, Set<String> roles) {
+    public String generateToken(String email, Long userId, Set<String> roles) {
         Date date = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .subject(email)
                 .claim("roles", roles)
+                .claim("userId", userId)
                 .expiration(date)
                 .signWith(getSignKey())
                 .compact();
