@@ -33,11 +33,11 @@ public class GatewayConfig {
                         .uri("lb://auth-service")
                 )
 
-                .route("user-controller", r -> r.path("/user/**")
+                .route("income-expense-service", r -> r.path("/api/**")
                         .filters(f -> f.filter(jwtAuthFilter.apply(
-                                new JwtAuthenticationFilter.Config().setPublicEndpoints(PUBLIC_ENDPOINTS)
+                                new JwtAuthenticationFilter.Config().setPublicEndpoints(List.of())
                         )))
-                        .uri("lb://auth-service")
+                        .uri("lb://income-expense-service")
                 )
                 .build();
     }
