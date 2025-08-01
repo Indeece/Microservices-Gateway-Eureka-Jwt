@@ -94,5 +94,5 @@ Basic system health checks are enabled via Spring Boot Actuator.
 
 ## Screenshots
 
-[Click here to show the screenshots of project
+[Click here to see the project screenshots
 ](https://github.com/Indeece/Microservices-Gateway-Eureka-Jwt/blob/main/screenshots/)
